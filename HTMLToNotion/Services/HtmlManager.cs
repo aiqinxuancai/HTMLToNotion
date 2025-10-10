@@ -87,7 +87,8 @@ namespace EvernoteToNotion.Services
                     if (imageBytes.Length > 0)
                     {
                         string base64ImageRepresentation = Convert.ToBase64String(imageBytes);
-                        var image = $"data:image/jpeg;base64,{base64ImageRepresentation}";
+                        string mimeType = GetImageMimeType(imageBytes);
+                        var image = $"data:{mimeType};base64,{base64ImageRepresentation}";
 
                         Bitmap bitmap = new Bitmap(new MemoryStream(imageBytes));
 
@@ -152,6 +153,14 @@ namespace EvernoteToNotion.Services
             }
 
             File.WriteAllText(newFilePath, doc.DocumentNode.OuterHtml);
+            
+
+            //var converter = new ReverseMarkdown.Converter();
+            //string html = doc.DocumentNode.OuterHtml;
+            //string result = converter.Convert(html);
+
+            //File.WriteAllText(newFilePath + ".md", result);
+
             return nodeList.Count;
 
         }
@@ -242,6 +251,64 @@ namespace EvernoteToNotion.Services
         {
             Image image = Bitmap.FromFile(path);
             return image.Size;
+        }
+
+        /// <summary>
+        /// 根据图片字节数据获取MIME类型
+        /// </summary>
+        /// <param name="imageBytes">图片字节数组</param>
+        /// <returns>MIME类型字符串</returns>
+        private static string GetImageMimeType(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length < 4)
+            {
+                return "image/jpeg"; // 默认返回jpeg
+            }
+
+            // PNG: 89 50 4E 47
+            if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
+            {
+                return "image/png";
+            }
+
+            // JPEG: FF D8 FF
+            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+            {
+                return "image/jpeg";
+            }
+
+            // GIF: 47 49 46
+            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46)
+            {
+                return "image/gif";
+            }
+
+            // BMP: 42 4D
+            if (imageBytes[0] == 0x42 && imageBytes[1] == 0x4D)
+            {
+                return "image/bmp";
+            }
+
+            // WebP: 52 49 46 46 ... 57 45 42 50
+            if (imageBytes.Length >= 12 &&
+                imageBytes[0] == 0x52 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x46 &&
+                imageBytes[8] == 0x57 && imageBytes[9] == 0x45 && imageBytes[10] == 0x42 && imageBytes[11] == 0x50)
+            {
+                return "image/webp";
+            }
+
+            // SVG: 检测XML开头或<svg标签
+            if (imageBytes.Length >= 5)
+            {
+                string header = System.Text.Encoding.ASCII.GetString(imageBytes, 0, Math.Min(100, imageBytes.Length));
+                if (header.Contains("<svg") || header.Contains("<?xml"))
+                {
+                    return "image/svg+xml";
+                }
+            }
+
+            // 默认返回jpeg
+            return "image/jpeg";
         }
         private static void ConversionTodoList(HtmlNode node, string basePath, string path)
         {

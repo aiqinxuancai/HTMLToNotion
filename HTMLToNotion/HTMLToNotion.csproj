@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="icon.ico" />
+    <Resource Include="icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,15 +23,16 @@
 	<PackageReference Include="Aspose.Words" Version="25.4.0" />
     <PackageReference Include="Flurl.Http" Version="4.0.2" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.4" />
-    <PackageReference Include="WPF-UI" Version="4.0.2" />
+    <PackageReference Include="ReverseMarkdown" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.9" />
+    <PackageReference Include="WPF-UI" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="icon.png" />
+    <Resource Include="icon.png" />
   </ItemGroup>
 
 
